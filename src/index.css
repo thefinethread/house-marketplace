@@ -7,4 +7,5 @@
 /* default active class for navlink component */
 a.active {
   color: #111;
+  font-weight: 600;
 }
