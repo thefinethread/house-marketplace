@@ -10,6 +10,7 @@ import {
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
+import { toast } from 'react-toastify';
 
 import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
 import InputField from '../components/inputField/InputField';
@@ -47,18 +48,17 @@ const SignUp = () => {
       await updateProfile(auth.currentUser, {
         displayName: name,
       });
-
       // copying formdata object to new one
       const formDataCopy = { ...formData };
       delete formData.password;
       formData.timeStamp = serverTimestamp();
-
       // insert record in firestore db
       await setDoc(doc(db, 'users', user.uid), formDataCopy);
 
+      toast.success('Signed up successfully!');
       navigate('/');
     } catch (error) {
-      console.log(error);
+      toast.error('Something went wrong!');
     }
   };
 

@@ -8,6 +8,8 @@ import {
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from '../firebase.config';
 
+import { toast } from 'react-toastify';
+
 import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
 import InputField from '../components/inputField/InputField';
 
@@ -32,13 +34,12 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
-
     try {
       await signInWithEmailAndPassword(getAuth(app), email, password);
+      toast.success(`Welcome back! You're signed in.`);
       navigate('/');
     } catch (error) {
-      console.log(error);
+      toast.error('Invalid login credentials.');
     }
   };
 
