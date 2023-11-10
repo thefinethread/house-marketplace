@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   RiUserFill,
   RiLockPasswordFill,
@@ -7,47 +7,79 @@ import {
   RiFileUserFill,
 } from 'react-icons/ri';
 
-import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../firebase.config';
 
+import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
 import InputField from '../components/inputField/InputField';
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+
+  const navigate = useNavigate();
 
   const { name, email, password } = formData;
 
-  const changeFormData = (e) => {
+  const onChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+
+      // copying formdata object to new one
+      const formDataCopy = { ...formData };
+      delete formData.password;
+      formData.timeStamp = serverTimestamp();
+
+      // insert record in firestore db
+      await setDoc(doc(db, 'users', user.uid), formDataCopy);
+
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <div className="p-4 max-w-sm mx-auto">
-      <header className="font-bold text-3xl">Welcome Back!</header>
-      <form onSubmit={handleSubmit} className="my-8">
+      <header className="font-bold text-3xl">Create Your Account</header>
+      <form onSubmit={onSubmit} className="my-8">
         <InputField
-          onChange={changeFormData}
+          onChange={onChange}
           input="Name"
           value={name}
           icon={RiFileUserFill}
         />
         <InputField
-          onChange={changeFormData}
+          onChange={onChange}
           input="Email"
           value={email}
           icon={RiUserFill}
         />
         <InputField
-          onChange={changeFormData}
+          onChange={onChange}
           input="Password"
           value={password}
           icon={RiLockPasswordFill}

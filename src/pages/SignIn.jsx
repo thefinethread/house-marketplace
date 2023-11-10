@@ -7,12 +7,14 @@ import {
 } from 'react-icons/ri';
 
 import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
-
 import InputField from '../components/inputField/InputField';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
 
   const { email, password } = formData;
 
