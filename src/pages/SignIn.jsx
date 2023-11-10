@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   RiUserFill,
   RiLockPasswordFill,
   RiArrowRightSLine,
 } from 'react-icons/ri';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import app from '../firebase.config';
 
 import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
 import InputField from '../components/inputField/InputField';
@@ -16,6 +18,8 @@ const SignIn = () => {
     password: '',
   });
 
+  const navigate = useNavigate();
+
   const { email, password } = formData;
 
   const changeFormData = (e) => {
@@ -25,10 +29,17 @@ const SignIn = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     console.log(formData);
+
+    try {
+      await signInWithEmailAndPassword(getAuth(app), email, password);
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
