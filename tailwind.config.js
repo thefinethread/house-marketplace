@@ -8,6 +8,7 @@ module.exports = {
       },
       colors: {
         accent: '#0c6',
+        hover: '#01974c',
       },
     },
   },

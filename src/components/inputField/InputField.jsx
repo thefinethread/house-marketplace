@@ -4,6 +4,7 @@ const InputField = ({
   input,
   value,
   icon: Icon,
+  disabled = false,
   onChange,
   toggleVisibility,
   showPassword,
@@ -22,7 +23,8 @@ const InputField = ({
         type={input === 'Password' && !showPassword ? 'password' : 'text'}
         placeholder={input}
         id={input.toLowerCase()}
-        className="w-full py-3 px-10 rounded-full outline-none focus:shadow-[0_0_0_4px_rgba(0,204,102,0.2)]"
+        disabled={disabled}
+        className="w-full py-3 px-10 rounded-full outline-none focus:shadow-[0_0_0_4px_rgba(0,204,102,0.2)] disabled:bg-white disabled:cursor-not-allowed"
       />
       {input === 'Password' && (
         <PassVisibilityIcon
