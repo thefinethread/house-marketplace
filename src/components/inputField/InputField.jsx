@@ -14,7 +14,7 @@ const InputField = ({
     <div className="relative my-8">
       <Icon
         size="1.2rem"
-        className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400"
+        className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-300"
       />
       <input
         onChange={onChange}

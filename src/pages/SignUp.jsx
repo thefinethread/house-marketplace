@@ -4,7 +4,7 @@ import {
   RiUserFill,
   RiLockPasswordFill,
   RiArrowRightSLine,
-  RiFileUserFill,
+  RiMailFill,
 } from 'react-icons/ri';
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
@@ -70,13 +70,13 @@ const SignUp = () => {
           onChange={onChange}
           input="Name"
           value={name}
-          icon={RiFileUserFill}
+          icon={RiUserFill}
         />
         <InputField
           onChange={onChange}
           input="Email"
           value={email}
-          icon={RiUserFill}
+          icon={RiMailFill}
         />
         <InputField
           onChange={onChange}

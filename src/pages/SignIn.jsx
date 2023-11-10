@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  RiUserFill,
+  RiMailFill,
   RiLockPasswordFill,
   RiArrowRightSLine,
 } from 'react-icons/ri';
@@ -51,7 +51,7 @@ const SignIn = () => {
           onChange={changeFormData}
           input="Email"
           value={email}
-          icon={RiUserFill}
+          icon={RiMailFill}
         />
         <InputField
           onChange={changeFormData}
