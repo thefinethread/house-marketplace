@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { RiUserFill, RiMailFill } from 'react-icons/ri';
-import { signOut } from 'firebase/auth';
+import { signOut, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 import InputField from '../components/inputField/InputField';
 
 const Profile = () => {
+  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
-
   const { name, email } = formData;
 
   const navigate = useNavigate();
@@ -27,6 +27,26 @@ const Profile = () => {
     }
   };
 
+  const onChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async () => {
+    if (auth.currentUser.displayName !== name) {
+      try {
+        await updateProfile(auth.currentUser, {
+          displayName: name,
+        });
+        toast.info('Profile updated');
+      } catch (error) {
+        toast.error(`Couldn't update your profile`);
+      }
+    }
+  };
+
   return (
     <div className="py-10 px-4 max-w-7xl mx-auto">
       <div className="flex justify-between">
@@ -38,13 +58,22 @@ const Profile = () => {
           Logout
         </button>
       </div>
-
-      <form className="my-8">
+      <div
+        onClick={() => {
+          setEditMode((prev) => !prev);
+          editMode && handleSubmit();
+        }}
+        className="mt-10 mb-2 cursor-pointer text-accent font-bold text-right"
+      >
+        {editMode ? 'Save Changes' : 'Edit'}
+      </div>
+      <form>
         <InputField
           input="Name"
           value={name}
           icon={RiUserFill}
-          disabled={true}
+          disabled={!editMode}
+          onChange={onChange}
         />
         <InputField
           input="Email"

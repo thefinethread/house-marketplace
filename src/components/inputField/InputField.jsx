@@ -12,7 +12,7 @@ const InputField = ({
   const PassVisibilityIcon = showPassword ? RiEyeFill : RiEyeOffFill;
 
   return (
-    <div className="relative my-8">
+    <div className="relative mb-8">
       <Icon
         size="1.2rem"
         className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-300"
