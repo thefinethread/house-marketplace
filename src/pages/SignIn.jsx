@@ -9,9 +9,8 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from '../firebase.config';
 
 import { toast } from 'react-toastify';
-
-import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
 import InputField from '../components/inputField/InputField';
+import OAuth from '../components/oAuth/OAuth';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -73,14 +72,10 @@ const SignIn = () => {
           </button>
         </div>
       </form>
-      <div className="text-center flex flex-col text-lg font-semibold ">
-        <button className="flex items-center my-6 py-2 bg-white justify-center gap-3 border-accent border-2 border-solid rounded-full">
-          <span>Continue with</span>
-          <GoogleIcon height="1.3rem" width="1.3rem" />
-        </button>
-        <Link to="/sign-up" className="text-accent font-bold">
-          Sign Up Instead
-        </Link>
+
+      <OAuth />
+      <div className="text-accent text-lg text-center  font-bold">
+        <Link to="/sign-up">Sign Up Instead</Link>{' '}
       </div>
     </div>
   );

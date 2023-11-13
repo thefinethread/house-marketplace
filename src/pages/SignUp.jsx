@@ -11,9 +11,8 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
 import { toast } from 'react-toastify';
-
-import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
 import InputField from '../components/inputField/InputField';
+import OAuth from '../components/oAuth/OAuth';
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,8 +49,8 @@ const SignUp = () => {
       });
       // copying formdata object to new one
       const formDataCopy = { ...formData };
-      delete formData.password;
-      formData.timeStamp = serverTimestamp();
+      delete formDataCopy.password;
+      formDataCopy.timeStamp = serverTimestamp();
       // insert record in firestore db
       await setDoc(doc(db, 'users', user.uid), formDataCopy);
 
@@ -98,14 +97,10 @@ const SignUp = () => {
           </button>
         </div>
       </form>
-      <div className="text-center flex flex-col text-lg font-semibold ">
-        <button className="flex items-center my-6 py-2 bg-white justify-center gap-3 border-accent border-2 border-solid rounded-full">
-          <span>Continue with</span>
-          <GoogleIcon height="1.3rem" width="1.3rem" />
-        </button>
-        <Link to="/sign-in" className="text-accent font-bold">
-          Sign In Instead
-        </Link>
+
+      <OAuth />
+      <div className="text-accent text-lg text-center  font-bold">
+        <Link to="/sign-in">Sign In Instead</Link>
       </div>
     </div>
   );
