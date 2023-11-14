@@ -18,7 +18,7 @@ const Explore = () => {
               alt="rent category"
               className="w-full h-auto max-h-[15vw] min-h-[115px] object-cover rounded-xl"
             />
-            <p className="mt-3 font-normal">Places for rent</p>
+            <p className="mt-2 font-medium">Places for rent</p>
           </Link>
           <Link to="/category/sale" className="flex-1">
             <img
@@ -26,7 +26,7 @@ const Explore = () => {
               alt="sale category"
               className="w-full h-auto max-h-[15vw] min-h-[115px] object-cover rounded-xl"
             />
-            <p className="mt-3 font-normal">Places for sale</p>
+            <p className="mt-2 font-medium">Places for sale</p>
           </Link>
         </div>
       </main>

@@ -5,7 +5,7 @@ import { signOut, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase.config';
 import { toast } from 'react-toastify';
 
-import InputField from '../components/inputField/InputField';
+import InputField from '../components/InputField';
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);

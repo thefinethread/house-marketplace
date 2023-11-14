@@ -9,8 +9,8 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from '../firebase.config';
 
 import { toast } from 'react-toastify';
-import InputField from '../components/inputField/InputField';
-import OAuth from '../components/oAuth/OAuth';
+import InputField from '../components/InputField';
+import OAuth from '../components/OAuth';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);

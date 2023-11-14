@@ -4,7 +4,7 @@ import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebase.config';
 import { RiMailFill, RiArrowRightSLine } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-import InputField from '../components/inputField/InputField';
+import InputField from '../components/InputField';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

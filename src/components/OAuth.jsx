@@ -2,9 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { auth } from '../../firebase.config';
-import { db } from '../../firebase.config';
-import { ReactComponent as GoogleIcon } from '../../assets/googleicon.svg';
+import { auth } from '../firebase.config';
+import { db } from '../firebase.config';
+import { ReactComponent as GoogleIcon } from '../assets/googleicon.svg';
 import { toast } from 'react-toastify';
 
 const OAuth = () => {

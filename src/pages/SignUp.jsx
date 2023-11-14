@@ -11,8 +11,8 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
 import { toast } from 'react-toastify';
-import InputField from '../components/inputField/InputField';
-import OAuth from '../components/oAuth/OAuth';
+import InputField from '../components/InputField';
+import OAuth from '../components/OAuth';
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
