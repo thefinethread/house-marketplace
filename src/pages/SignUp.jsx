@@ -50,7 +50,7 @@ const SignUp = () => {
       // copying formdata object to new one
       const formDataCopy = { ...formData };
       delete formDataCopy.password;
-      formDataCopy.timeStamp = serverTimestamp();
+      formDataCopy.timestamp = serverTimestamp();
       // insert record in firestore db
       await setDoc(doc(db, 'users', user.uid), formDataCopy);
 

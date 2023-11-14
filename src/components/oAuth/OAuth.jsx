@@ -25,7 +25,7 @@ const OAuth = () => {
         await setDoc(doc(db, 'users', user.uid), {
           name: user.displayName,
           email: user.email,
-          timeStamp: serverTimestamp(),
+          timestamp: serverTimestamp(),
         });
         toast.success('Signed up successfully!');
       } else {
