@@ -10,6 +10,8 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import Spinner from './common/Spinner';
+import { toast } from 'react-toastify';
+import ListingItem from './ListingItem';
 
 const Category = () => {
   const [listings, setListings] = useState([]);
@@ -38,15 +40,29 @@ const Category = () => {
 
         setListings(listingsArr);
         setLoading(false);
-      } catch (error) {}
+      } catch (error) {
+        toast.error('Error fetching listings');
+      }
     };
-
     getDataFromDb();
   }, [type]);
 
   if (loading) return <Spinner />;
 
-  return listings.length > 0 ? <div>{listings[0].name}</div> : 'no listings';
+  return listings.length > 0 ? (
+    <div className="py-8 px-4 max-w-7xl mx-auto">
+      <header className="mb-8 font-bold">
+        <p className="text-4xl">Places for {type}</p>
+      </header>
+      <div>
+        {listings.map((item) => (
+          <ListingItem key={item.id} item={item} />
+        ))}
+      </div>
+    </div>
+  ) : (
+    'no listings'
+  );
 };
 
 export default Category;
