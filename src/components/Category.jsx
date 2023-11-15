@@ -61,7 +61,9 @@ const Category = () => {
       </div>
     </div>
   ) : (
-    'no listings'
+    <div className="flex items-center justify-center mt-20">
+      No listings available at the moment.
+    </div>
   );
 };
 

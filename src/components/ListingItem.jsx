@@ -1,5 +1,6 @@
 import { FaBath, FaBed } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
+import { numberWithCommas } from '../utils/helperFunctions';
 
 const ListingItem = ({ item }) => {
   return (
@@ -14,7 +15,13 @@ const ListingItem = ({ item }) => {
           <p className="text-gray-500 font-semibold">{item.location}</p>
           <h3 className="text-base font-bold">{item.name}</h3>
           <div className="text-base font-bold text-accent">
-            ${item.regularPrice} {item.type === 'rent' && '/ Month'}
+            ${numberWithCommas(item.regularPrice)}{' '}
+            {item.offer && (
+              <span className="line-through font-normal opacity-80">
+                ${numberWithCommas(item.discountedPrice)}
+              </span>
+            )}{' '}
+            {item.type === 'rent' && '/ Month'}
           </div>
           <div className="flex justify-between text-gray-500 font-semibold">
             <div className="flex items-center gap-2">
