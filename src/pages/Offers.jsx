@@ -73,8 +73,8 @@ const Offers = () => {
           <button
             key={tabValue}
             onClick={() => setTab(tabValue)}
-            className={`px-4 cursor-pointer rounded-full bg-white mr-2 ${
-              tab === tabValue && 'bg-hover text-white'
+            className={`px-4 cursor-pointer rounded-full mr-2 ${
+              tab === tabValue ? 'bg-hover text-white' : 'text-black bg-white '
             }`}
           >
             {tabValue}
@@ -85,7 +85,7 @@ const Offers = () => {
       {loading ? (
         <Spinner />
       ) : listings.length > 0 ? (
-        <div>
+        <div className="grid gap-8 grids:grid-cols-2">
           {listings.map((item) => (
             <ListingItem key={item.id} item={item} />
           ))}
