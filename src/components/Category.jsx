@@ -54,7 +54,7 @@ const Category = () => {
       <header className="mb-8 font-bold">
         <p className="text-4xl">Places for {type}</p>
       </header>
-      <div>
+      <div className="grid gap-6 min-[920px]:grid-cols-2">
         {listings.map((item) => (
           <ListingItem key={item.id} item={item} />
         ))}
