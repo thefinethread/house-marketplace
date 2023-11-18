@@ -12,6 +12,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import NavBar from './components/navbar/NavBar';
 import Category from './components/Category';
 import CreateListing from './pages/CreateListing';
+import Listing from './pages/Listing';
 
 const App = () => {
   return (
@@ -29,6 +30,10 @@ const App = () => {
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/create-listing" element={<CreateListing />} />
+            <Route
+              path="/category/:categoryType/:listingId"
+              element={<Listing />}
+            />
           </Routes>
         </div>
         <NavBar />

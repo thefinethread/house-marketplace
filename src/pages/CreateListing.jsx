@@ -135,8 +135,6 @@ const CreateListing = () => {
       return;
     });
 
-    console.log(imageUrls);
-
     const formDataCopy = {
       ...formData,
       imageUrls,
@@ -144,8 +142,6 @@ const CreateListing = () => {
     };
     formDataCopy.timestamp = serverTimestamp();
     delete formDataCopy.images;
-
-    console.log(formDataCopy);
 
     try {
       await addDoc(collection(db, 'listings'), formDataCopy);
@@ -175,9 +171,9 @@ const CreateListing = () => {
             <div className="mt-1 flex gap-4">
               <PrimaryBtn
                 onMutate={onMutate}
-                isActive={type === 'sell'}
+                isActive={type === 'sale'}
                 id="type"
-                value="sell"
+                value="sale"
               >
                 Sell
               </PrimaryBtn>

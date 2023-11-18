@@ -5,11 +5,11 @@ import { numberWithCommas } from '../utils/helperFunctions';
 const ListingItem = ({ item }) => {
   return (
     <Link to={`/category/${item.type}/${item.id}`} className="max-w-lg block">
-      <div className="flex p-2 gap-6 justify-start items-stretch h-30 rounded-2xl transition-colors hover:bg-white">
+      <div className="flex h-full p-2 gap-6 justify-start items-stretch h-30 rounded-2xl transition-colors hover:bg-white">
         <img
           src={item.imageUrls[0]}
           alt="house"
-          className="h-full w-1/3  object-cover rounded-3xl"
+          className="h-inherit w-1/3  object-cover rounded-3xl"
         />
         <div className="text-xs h-full flex flex-col justify-between w-full">
           <p className="text-gray-500 font-semibold">{item.location}</p>
@@ -23,14 +23,14 @@ const ListingItem = ({ item }) => {
             )}{' '}
             {item.type === 'rent' && '/ Month'}
           </div>
-          <div className="flex justify-start gap-8 text-gray-500 font-semibold">
-            <div className="flex items-center gap-2">
+          <div className="flex justify-start gap-3 md:gap-8 text-gray-500 font-semibold">
+            <div className="flex items-center gap-1">
               <FaBed size="1.4rem" />
               <p>
                 {item.bedrooms} {item.bedrooms > 0 ? 'Bedrooms' : 'Bedroom'}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <FaBath size="1.2rem" />
               <p>
                 {item.bathrooms} {item.bathrooms > 0 ? 'Bathrooms' : 'Bathroom'}

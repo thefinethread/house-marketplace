@@ -11,9 +11,6 @@ module.exports = {
         hover: '#01974c',
       },
     },
-    screens: {
-      grids: '920px',
-    },
   },
   plugins: [],
 };
