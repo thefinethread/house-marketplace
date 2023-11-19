@@ -4,9 +4,14 @@ import { RiShareForwardFill } from 'react-icons/ri';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { getDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
-
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import { numberWithCommas } from '../utils/helperFunctions';
 import Spinner from '../components/common/Spinner';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 const Listing = () => {
   const [listing, setListing] = useState(null);
@@ -44,10 +49,31 @@ const Listing = () => {
 
   return (
     <div>
-      {/* coverpic */}
+      <div>
+        <Swiper
+          className="h-[70vw] max-h-64"
+          modules={[Navigation, Pagination, Scrollbar, A11y]}
+          navigation
+          pagination={{ clickable: true }}
+          scrollbar={{ draggable: true }}
+          loop={true}
+        >
+          {listing.imageUrls.map((url, index) => {
+            return (
+              <SwiperSlide key={index}>
+                <img
+                  src={url}
+                  alt="house"
+                  className="w-full object-cover h-full"
+                />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
       <div
         onClick={copyLinkToClipBoard}
-        className="fixed cursor-pointer top-2 right-6 flex justify-center items-center bg-white rounded-full h-14 w-14"
+        className="fixed cursor-pointer border top-2 right-6 flex justify-center items-center bg-white rounded-full h-14 w-14 z-10"
       >
         <RiShareForwardFill color="rgba(0,0,0,0.7)" size="1.8rem" />
       </div>
@@ -99,7 +125,7 @@ const Listing = () => {
           center={[listing.geolocation.lat, listing.geolocation.long]}
           zoom={13}
           scrollWheelZoom={false}
-          className="h-[50vw] max-h-96 w-full"
+          className="h-[50vw] max-h-96 w-full z-0"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
