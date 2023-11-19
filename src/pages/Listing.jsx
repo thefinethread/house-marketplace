@@ -5,7 +5,13 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { getDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import {
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Autoplay,
+} from 'swiper/modules';
 import { numberWithCommas } from '../utils/helperFunctions';
 import Spinner from '../components/common/Spinner';
 import 'swiper/css';
@@ -52,11 +58,12 @@ const Listing = () => {
       <div>
         <Swiper
           className="h-[70vw] max-h-64"
-          modules={[Navigation, Pagination, Scrollbar, A11y]}
+          modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
           navigation
           pagination={{ clickable: true }}
           scrollbar={{ draggable: true }}
           loop={true}
+          autoplay={{ delay: 2000, pauseOnMouseEnter: true }}
         >
           {listing.imageUrls.map((url, index) => {
             return (
@@ -64,7 +71,7 @@ const Listing = () => {
                 <img
                   src={url}
                   alt="house"
-                  className="w-full object-cover h-full"
+                  className={'w-full object-cover h-full'}
                 />
               </SwiperSlide>
             );
