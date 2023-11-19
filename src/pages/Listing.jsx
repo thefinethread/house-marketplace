@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { RiShareForwardFill } from 'react-icons/ri';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { getDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
 
@@ -12,7 +13,7 @@ const Listing = () => {
   const [loading, setLoading] = useState(true);
   const [copyToClipBoard, setCopyToClipBoard] = useState(false);
 
-  const { categoryType, listingId } = useParams();
+  const { listingId } = useParams();
 
   useEffect(() => {
     const getListing = async () => {
@@ -94,10 +95,26 @@ const Listing = () => {
 
         <h3 className="font-bold text-xl mt-5 mb-2">Location</h3>
         {/* Map */}
+        <MapContainer
+          center={[listing.geolocation.lat, listing.geolocation.long]}
+          zoom={13}
+          scrollWheelZoom={false}
+          className="h-[50vw] max-h-96 w-full"
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker
+            position={[listing.geolocation.lat, listing.geolocation.long]}
+          >
+            <Popup>{listing.location}</Popup>
+          </Marker>
+        </MapContainer>
 
         {auth.currentUser?.uid !== listing.userRef && (
           <Link
-            to={`/contact/${listing.userRef}?listing=${listing.name}&location=${listing.location}`}
+            to={`/contact/${listing.userRef}?listingName=${listing.name}}`}
             className="mx-auto mt-10 block max-w-lg text-center py-3 px-10 font-bold text-xl bg-accent text-white rounded-2xl hover:bg-hover transition-colors"
           >
             Contact Landlord

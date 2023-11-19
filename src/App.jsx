@@ -13,6 +13,7 @@ import NavBar from './components/navbar/NavBar';
 import Category from './components/Category';
 import CreateListing from './pages/CreateListing';
 import Listing from './pages/Listing';
+import Contact from './pages/Contact';
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
               path="/category/:categoryType/:listingId"
               element={<Listing />}
             />
+            <Route path="/contact/:landlordId" element={<Contact />} />
           </Routes>
         </div>
         <NavBar />
