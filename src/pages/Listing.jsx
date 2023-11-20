@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { RiShareForwardFill } from 'react-icons/ri';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { RiShareForwardFill, RiMore2Fill } from 'react-icons/ri';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
@@ -18,13 +18,18 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
+import Modal from '../components/listingPage/Modal';
+import { toast } from 'react-toastify';
 
 const Listing = () => {
   const [listing, setListing] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [copyToClipBoard, setCopyToClipBoard] = useState(false);
 
   const { listingId } = useParams();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getListing = async () => {
@@ -47,6 +52,24 @@ const Listing = () => {
     setTimeout(() => {
       setCopyToClipBoard(false);
     }, 2000);
+  };
+
+  const removeListing = async () => {
+    if (window.confirm('Are you sure to delete?')) {
+      try {
+        setLoading(true);
+        await deleteDoc(doc(db, 'listings', listingId));
+
+        toast.success('Listing has been deleted');
+        navigate('/');
+      } catch (error) {
+        toast.error('Something went wrong');
+      }
+      setLoading(false);
+    } else {
+      setShowModal(false);
+      return;
+    }
   };
 
   if (loading) {
@@ -90,8 +113,21 @@ const Listing = () => {
         </div>
       )}
 
-      <div className="mt-10 px-4 max-w-6xl m-auto">
-        <h2 className="font-bold text-2xl">{listing.name}</h2>
+      <div className="relative mt-10 px-4 max-w-6xl m-auto">
+        <div className="flex justify-between items-center">
+          <h2 className="font-bold text-2xl">{listing.name}</h2>
+          {auth.currentUser && (
+            <div className="relative">
+              <RiMore2Fill
+                onClick={() => setShowModal((prev) => !prev)}
+                size="1.5rem"
+                className="cursor-pointer"
+              />
+              {showModal && <Modal removeListing={removeListing} />}
+            </div>
+          )}
+        </div>
+
         <div className="text-xl my-1 font-bold text-accent">
           ${numberWithCommas(listing.regularPrice)}{' '}
           {listing.offer && (
