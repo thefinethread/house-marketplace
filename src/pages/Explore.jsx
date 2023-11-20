@@ -69,7 +69,7 @@ const Explore = () => {
           pagination={{ clickable: true }}
           scrollbar={{ draggable: true }}
           loop={true}
-          // autoplay={{ delay: 2000, pauseOnMouseEnter: true }}
+          autoplay={{ delay: 2000, pauseOnMouseEnter: true }}
         >
           {listings.map((listing, index) => {
             return (

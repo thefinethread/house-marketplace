@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   RiUserFill,
@@ -7,20 +7,67 @@ import {
   RiArrowRightSLine,
 } from 'react-icons/ri';
 import { signOut, updateProfile } from 'firebase/auth';
-import { auth } from '../firebase.config';
+import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
+import { auth, db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 import InputField from '../components/InputField';
+import Spinner from '../components/common/Spinner';
+import ListingItem from '../components/ListingItem';
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);
+  const [tab, setTab] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [listings, setListings] = useState(null);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
+
   const { name, email } = formData;
 
+  const tabValues = ['all', 'rent', 'sale'];
+
   const navigate = useNavigate();
+
+  // fetch current user's listings
+  useEffect(() => {
+    setLoading(true);
+
+    const getCurrentUserListings = async () => {
+      let q;
+      if (tab === 'all') {
+        q = query(
+          collection(db, 'listings'),
+          where('userRef', '==', auth.currentUser.uid),
+          orderBy('timestamp', 'desc')
+        );
+      } else {
+        q = query(
+          collection(db, 'listings'),
+          where('type', '==', tab),
+          where('userRef', '==', auth.currentUser.uid),
+          orderBy('timestamp', 'desc')
+        );
+      }
+      const docsSnap = await getDocs(q);
+
+      if (!docsSnap.empty) {
+        let docsArr = [];
+
+        docsSnap.forEach((doc) =>
+          docsArr.push({
+            id: doc.id,
+            ...doc.data(),
+          })
+        );
+        setListings(docsArr);
+        setLoading(false);
+      }
+    };
+    getCurrentUserListings();
+  }, [tab]);
 
   const onLogout = async () => {
     try {
@@ -100,6 +147,39 @@ const Profile = () => {
             </Link>
           </div>
         </section>
+
+        {listings && (
+          <section>
+            <div className="mt-8 mb-4 flex justify-between items-center">
+              <h3 className="text-xl font-bold">Your Listings</h3>
+              <div className="font-bold text-accent">
+                {tabValues.map((tabValue) => (
+                  <button
+                    key={tabValue}
+                    onClick={() => setTab(tabValue)}
+                    className={`px-4 font-semibold text-sm cursor-pointer rounded-full mr-2 ${
+                      tab === tabValue
+                        ? 'bg-hover text-white'
+                        : 'text-black bg-white '
+                    }`}
+                  >
+                    {tabValue}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {loading ? (
+              <Spinner />
+            ) : (
+              <div className="grid gap-6 min-[920px]:grid-cols-2">
+                {listings.map((item) => (
+                  <ListingItem key={item.id} item={item} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </main>
     </div>
   );
