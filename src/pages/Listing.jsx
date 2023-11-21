@@ -123,7 +123,11 @@ const Listing = () => {
                 size="1.5rem"
                 className="cursor-pointer"
               />
-              {showModal && <Modal removeListing={removeListing} />}
+              <Modal
+                isOpen={showModal}
+                removeListing={removeListing}
+                onClose={() => setShowModal(false)}
+              />
             </div>
           )}
         </div>
