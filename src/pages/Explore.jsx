@@ -90,7 +90,8 @@ const Explore = () => {
                       {listing.name}
                     </div>
                     <div className="bg-white/90  rounded-full w-fit px-4 py-1">
-                      $2000/month
+                      ${listing.discountedPrice || listing.regularPrice}{' '}
+                      {listing.type === 'rent' && '/ Month'}
                     </div>
                   </div>
                 </div>

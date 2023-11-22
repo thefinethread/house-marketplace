@@ -15,10 +15,10 @@ const ListingItem = ({ item }) => {
           <p className="text-gray-500 font-semibold">{item.location}</p>
           <h3 className="text-base font-bold">{item.name}</h3>
           <div className="text-base font-bold text-accent">
-            ${numberWithCommas(item.regularPrice)}{' '}
+            ${numberWithCommas(item.discountedPrice || item.regularPrice)}{' '}
             {item.offer && (
               <span className="line-through font-normal opacity-80">
-                ${numberWithCommas(item.discountedPrice)}
+                ${numberWithCommas(item.regularPrice)}
               </span>
             )}{' '}
             {item.type === 'rent' && '/ Month'}

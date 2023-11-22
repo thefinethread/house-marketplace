@@ -108,7 +108,7 @@ const Listing = () => {
         <RiShareForwardFill color="rgba(0,0,0,0.7)" size="1.8rem" />
       </div>
       {copyToClipBoard && (
-        <div className="fixed py-1 right-6 top-20 px-4 font-bold rounded-full bg-white">
+        <div className="z-10 fixed py-1 right-6 top-20 px-4 font-bold rounded-full bg-white">
           Link Copied!
         </div>
       )}
@@ -137,10 +137,10 @@ const Listing = () => {
         </div>
 
         <div className="text-xl my-1 font-bold text-accent">
-          ${numberWithCommas(listing.regularPrice)}{' '}
+          ${numberWithCommas(listing.discountedPrice || listing.regularPrice)}{' '}
           {listing.offer && (
             <span className="line-through font-normal opacity-80">
-              ${numberWithCommas(listing.discountedPrice)}
+              ${numberWithCommas(listing.regularPrice)}
             </span>
           )}{' '}
           {listing.type === 'rent' && '/ Month'}
