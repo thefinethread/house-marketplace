@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { onAuthStateChanged } from 'firebase/auth';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import {
+  addDoc,
+  updateDoc,
+  doc,
+  collection,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { auth, storage, db } from '../firebase.config';
 import { toast } from 'react-toastify';
@@ -10,7 +15,11 @@ import Spinner from '../components/common/Spinner';
 
 import PrimaryBtn from '../components/common/PrimaryBtn';
 
-const CreateListing = () => {
+const ListingForm = () => {
+  const { listingId } = useParams();
+  const locationHook = useLocation();
+  const listing = locationHook.state;
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: 'rent',
@@ -22,10 +31,12 @@ const CreateListing = () => {
     location: '',
     lat: '',
     long: '',
+    geolocation: {},
     offer: false,
     regularPrice: 0,
     discountedPrice: 0,
     images: [],
+    imageUrls: [],
   });
 
   const {
@@ -36,29 +47,29 @@ const CreateListing = () => {
     parking,
     furnished,
     location,
+    geolocation,
     lat,
     long,
     offer,
     regularPrice,
     discountedPrice,
     images,
+    imageUrls,
   } = formData;
 
   const navigate = useNavigate();
 
-  // get logged in user id
   useEffect(() => {
-    const getLoggedInUser = async () => {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setFormData((prev) => ({ ...prev, userRef: user.uid }));
-        } else {
-          navigate('/sign-in');
-        }
-      });
-    };
-    getLoggedInUser();
-  }, [navigate]);
+    // set existing data in state while updating
+    listing && setFormData(listing);
+
+    // get logged in user id
+    if (auth.currentUser) {
+      setFormData((prev) => ({ ...prev, userRef: auth.currentUser.uid }));
+    } else {
+      navigate('/sign-in');
+    }
+  }, [navigate, listing]);
 
   const onMutate = (e) => {
     e.preventDefault();
@@ -97,7 +108,7 @@ const CreateListing = () => {
       return;
     }
 
-    if (images.length > 6) {
+    if (images && images.length + imageUrls > 6) {
       toast.error('Max 6 images are allowed');
       return;
     }
@@ -105,53 +116,64 @@ const CreateListing = () => {
     setLoading(true);
 
     // upload images to firebase storage
-    const uploadImages = (images) => {
-      const uploadPromises = images.map((image) => {
-        return new Promise((resolve, reject) => {
-          const fileName = `${formData.userRef}-${image.name}-${uuidv4()}`;
-          const storageRef = ref(storage, `images/${fileName}`);
-          const uploadTask = uploadBytesResumable(storageRef, image);
-
-          uploadTask.on(
-            'state_changed',
-            () => {},
-            (error) => reject(error),
-            () => {
-              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                resolve(downloadURL);
-              });
-            }
-          );
-        });
+    let uploadedImageUrls = [];
+    if (images) {
+      uploadedImageUrls = await uploadImages(images).catch(() => {
+        toast.error('Images not uploaded');
+        setLoading(false);
+        return;
       });
+    }
 
-      return Promise.all(uploadPromises);
-    };
-
-    const imageUrls = await uploadImages(images).catch((error) => {
-      console.log(error);
-      toast.error('Images not uploaded');
-      setLoading(false);
-      return;
-    });
-
+    // set data to be saved/updated in db
     const formDataCopy = {
       ...formData,
-      imageUrls,
-      geolocation: { lat, long },
+      imageUrls: [...imageUrls, ...uploadedImageUrls],
+      geolocation: { ...geolocation } || { lat, long },
+      timestamp: serverTimestamp(),
     };
-    formDataCopy.timestamp = serverTimestamp();
     delete formDataCopy.images;
+    delete formDataCopy.lat;
+    delete formDataCopy.long;
+    !offer && delete formDataCopy.discountedPrice;
+    console.log(formDataCopy);
 
+    // perform save/update operation in firestore
     try {
-      await addDoc(collection(db, 'listings'), formDataCopy);
-      toast.success('Listing created successfully');
+      !listing
+        ? await addDoc(collection(db, 'listings'), formDataCopy)
+        : await updateDoc(doc(db, 'listings', listingId), formDataCopy);
+
+      toast.success(`Listing ${listing ? 'updated' : 'created'} successfully`);
       setLoading(false);
       navigate('/');
     } catch (error) {
       toast.error('Something went wrong');
       setLoading(false);
     }
+  };
+
+  // upload images to firebase storage
+  const uploadImages = (images) => {
+    const uploadPromises = images.map((image) => {
+      return new Promise((resolve, reject) => {
+        const fileName = `${formData.userRef}-${image.name}-${uuidv4()}`;
+        const storageRef = ref(storage, `images/${fileName}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          'state_changed',
+          () => {},
+          (error) => reject(error),
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    });
+    return Promise.all(uploadPromises);
   };
 
   if (loading) {
@@ -161,7 +183,9 @@ const CreateListing = () => {
   return (
     <div className="py-10 px-4 max-w-7xl mx-auto">
       <header className="mb-6">
-        <p className="text-4xl font-bold">Create a Listing</p>
+        <p className="text-4xl font-bold">
+          {listing ? 'Update Listing' : 'Create a Listing'}
+        </p>
       </header>
 
       <main>
@@ -287,7 +311,7 @@ const CreateListing = () => {
                 onChange={onMutate}
                 type="text"
                 id="lat"
-                value={lat}
+                value={geolocation.lat || lat}
                 className="w-36 h-11 px-4 rounded-2xl outline-none"
               />
             </div>
@@ -297,7 +321,7 @@ const CreateListing = () => {
                 onChange={onMutate}
                 type="text"
                 id="long"
-                value={long}
+                value={geolocation.long || long}
                 className="w-36 h-11 px-4 rounded-2xl outline-none"
               />
             </div>
@@ -367,7 +391,7 @@ const CreateListing = () => {
                 max="6"
                 multiple
                 className="bg-white p-4 mt-1 w-full rounded-2xl cursor-pointer file:opacity-0 file:z-10 file:relative"
-                required
+                required={listing ? false : true}
               />
               <span className="absolute left-2 top-1 translate-y-1/2 bg-accent text-white px-2 py-1  rounded-xl">
                 Choose Files
@@ -378,11 +402,11 @@ const CreateListing = () => {
             className="py-3 px-5 w-full mt-8 outline-none rounded-2xl bg-accent text-white hover:bg-hover"
             type="submit"
           >
-            Create Listing
+            {listing ? 'Update' : 'Create'} Listing
           </button>
         </form>
       </main>
     </div>
   );
 };
-export default CreateListing;
+export default ListingForm;

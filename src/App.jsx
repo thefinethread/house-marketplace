@@ -11,7 +11,7 @@ import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
 import NavBar from './components/navbar/NavBar';
 import Category from './components/Category';
-import CreateListing from './pages/CreateListing';
+import ListingForm from './pages/ListingForm';
 import Listing from './pages/Listing';
 import Contact from './pages/Contact';
 
@@ -30,7 +30,11 @@ const App = () => {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/create-listing" element={<CreateListing />} />
+            <Route path="/create-listing" element={<ListingForm />} />
+            <Route
+              path="/update-listing/:listingId"
+              element={<ListingForm />}
+            />
             <Route
               path="/category/:categoryType/:listingId"
               element={<Listing />}
