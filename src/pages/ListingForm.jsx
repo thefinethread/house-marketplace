@@ -136,7 +136,6 @@ const ListingForm = () => {
     delete formDataCopy.lat;
     delete formDataCopy.long;
     !offer && delete formDataCopy.discountedPrice;
-    console.log(formDataCopy);
 
     // perform save/update operation in firestore
     try {

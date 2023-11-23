@@ -7,15 +7,18 @@ import {
   getDocs,
   orderBy,
   limit,
+  startAfter,
 } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import Spinner from './common/Spinner';
 import { toast } from 'react-toastify';
 import ListingItem from './ListingItem';
+import LoadMoreBtn from './common/LoadMoreBtn';
 
 const Category = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastFetchedListing, setLastFetchedListing] = useState(null);
 
   const { type } = useParams();
 
@@ -31,6 +34,10 @@ const Category = () => {
         let listingsArr = [];
 
         const querySnap = await getDocs(q);
+
+        const lastVisible = querySnap.docs[querySnap.docs.length - 1];
+        setLastFetchedListing(lastVisible);
+
         querySnap.forEach((doc) =>
           listingsArr.push({
             id: doc.id,
@@ -47,6 +54,37 @@ const Category = () => {
     getDataFromDb();
   }, [type]);
 
+  const onLoadMore = async () => {
+    const q = query(
+      collection(db, 'listings'),
+      where('type', '==', type),
+      orderBy('timestamp', 'desc'),
+      startAfter(lastFetchedListing),
+      limit(10)
+    );
+
+    try {
+      const querySnap = await getDocs(q);
+
+      const lastVisible = querySnap.docs[querySnap.docs.length - 1];
+      setLastFetchedListing(lastVisible);
+
+      if (!querySnap.empty) {
+        const listingArr = [];
+
+        querySnap.forEach((doc) =>
+          listingArr.push({ id: doc.id, ...doc.data() })
+        );
+
+        setListings((prev) => [...prev, ...listingArr]);
+      } else {
+        toast.info('No more listings available');
+      }
+    } catch (error) {
+      toast.error(`Couldn't load more listings`);
+    }
+  };
+
   if (loading) return <Spinner />;
 
   return listings.length > 0 ? (
@@ -59,6 +97,12 @@ const Category = () => {
           <ListingItem key={item.id} item={item} />
         ))}
       </div>
+
+      {lastFetchedListing && (
+        <div className="mt-8 flex justify-center items-center">
+          <LoadMoreBtn handleClick={onLoadMore} />
+        </div>
+      )}
     </div>
   ) : (
     <div className="flex items-center justify-center mt-20">

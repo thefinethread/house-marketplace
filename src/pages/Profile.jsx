@@ -7,17 +7,27 @@ import {
   RiArrowRightSLine,
 } from 'react-icons/ri';
 import { signOut, updateProfile } from 'firebase/auth';
-import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  startAfter,
+} from 'firebase/firestore';
 import { auth, db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 import InputField from '../components/InputField';
 import Spinner from '../components/common/Spinner';
 import ListingItem from '../components/ListingItem';
+import LoadMoreBtn from '../components/common/LoadMoreBtn';
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);
   const [tab, setTab] = useState('all');
+  const [lastFetchedListing, setLastFetchedListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [listings, setListings] = useState(null);
   const [formData, setFormData] = useState({
@@ -41,22 +51,27 @@ const Profile = () => {
         q = query(
           collection(db, 'listings'),
           where('userRef', '==', auth.currentUser.uid),
-          orderBy('timestamp', 'desc')
+          orderBy('timestamp', 'desc'),
+          limit(10)
         );
       } else {
         q = query(
           collection(db, 'listings'),
           where('type', '==', tab),
           where('userRef', '==', auth.currentUser.uid),
-          orderBy('timestamp', 'desc')
+          orderBy('timestamp', 'desc'),
+          limit(10)
         );
       }
-      const docsSnap = await getDocs(q);
+      const querySnap = await getDocs(q);
 
-      if (!docsSnap.empty) {
+      const lastVisible = querySnap.docs[querySnap.docs.length - 1];
+      setLastFetchedListing(lastVisible);
+
+      if (!querySnap.empty) {
         let docsArr = [];
 
-        docsSnap.forEach((doc) =>
+        querySnap.forEach((doc) =>
           docsArr.push({
             id: doc.id,
             ...doc.data(),
@@ -96,6 +111,49 @@ const Profile = () => {
       } catch (error) {
         toast.error(`Couldn't update your profile`);
       }
+    }
+  };
+
+  const onLoadMore = async () => {
+    let q;
+    if (tab === 'all') {
+      q = query(
+        collection(db, 'listings'),
+        where('userRef', '==', auth.currentUser.uid),
+        orderBy('timestamp', 'desc'),
+        startAfter(lastFetchedListing),
+        limit(10)
+      );
+    } else {
+      q = query(
+        collection(db, 'listings'),
+        where('type', '==', tab),
+        where('userRef', '==', auth.currentUser.uid),
+        orderBy('timestamp', 'desc'),
+        startAfter(lastFetchedListing),
+        limit(10)
+      );
+    }
+
+    try {
+      const querySnap = await getDocs(q);
+
+      const lastVisible = querySnap.docs[querySnap.docs.length - 1];
+      setLastFetchedListing(lastVisible);
+
+      if (!querySnap.empty) {
+        const listingArr = [];
+
+        querySnap.forEach((doc) =>
+          listingArr.push({ id: doc.id, ...doc.data() })
+        );
+
+        setListings((prev) => [...prev, ...listingArr]);
+      } else {
+        toast.info('No more listings available');
+      }
+    } catch (error) {
+      toast.error(`Couldn't load more listings`);
     }
   };
 
@@ -176,6 +234,12 @@ const Profile = () => {
                 {listings.map((item) => (
                   <ListingItem key={item.id} item={item} />
                 ))}
+              </div>
+            )}
+
+            {lastFetchedListing && (
+              <div className="mt-8 flex justify-center items-center">
+                <LoadMoreBtn handleClick={onLoadMore} />
               </div>
             )}
           </section>
