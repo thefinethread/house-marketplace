@@ -18,8 +18,8 @@ import Contact from './pages/Contact';
 const App = () => {
   return (
     <Router>
-      <div className="font-primary w-ful h-screen bg-gray-100 overflow-x-hidden">
-        <div className="mb-20 md:ml-20">
+      <div className="font-primary flex flex-col  w-full h-screen bg-gray-100 overflow-x-hidden">
+        <div className="mb-[70px] flex-1 md:ml-20 md:mb-auto">
           <Routes>
             <Route path="/" element={<Explore />} />
             <Route path="/offers" element={<Offers />} />

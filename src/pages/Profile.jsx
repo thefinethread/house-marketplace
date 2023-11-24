@@ -29,6 +29,7 @@ const Profile = () => {
   const [tab, setTab] = useState('all');
   const [lastFetchedListing, setLastFetchedListing] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadMoreLoading, setLoadMoreLoading] = useState(false);
   const [listings, setListings] = useState(null);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
@@ -115,6 +116,8 @@ const Profile = () => {
   };
 
   const onLoadMore = async () => {
+    setLoadMoreLoading(true);
+
     let q;
     if (tab === 'all') {
       q = query(
@@ -154,11 +157,13 @@ const Profile = () => {
       }
     } catch (error) {
       toast.error(`Couldn't load more listings`);
+    } finally {
+      setLoadMoreLoading(false);
     }
   };
 
   return (
-    <div className="py-10 px-4 max-w-7xl mx-auto">
+    <div className="py-10 px-4 max-w-7xl h-full flex flex-col mx-auto">
       <header className="flex justify-between">
         <h1 className="font-bold text-3xl">Hi {name.split(' ')[0]}!</h1>
         <button
@@ -169,7 +174,7 @@ const Profile = () => {
         </button>
       </header>
 
-      <main className="mt-20">
+      <main className="mt-20 flex-1 flex flex-col">
         <section className="md:flex md:justify-between md:gap-10">
           <form className="relative w-full">
             <InputField
@@ -207,7 +212,7 @@ const Profile = () => {
         </section>
 
         {listings && (
-          <section>
+          <section className="flex-1 flex flex-col">
             <div className="mt-8 mb-4 flex justify-between items-center">
               <h3 className="text-xl font-bold">Your Listings</h3>
               <div className="font-bold text-accent">
@@ -228,19 +233,26 @@ const Profile = () => {
             </div>
 
             {loading ? (
-              <Spinner />
+              <div className="flex-1">
+                <Spinner />
+              </div>
             ) : (
-              <div className="grid gap-6 min-[920px]:grid-cols-2">
-                {listings.map((item) => (
-                  <ListingItem key={item.id} item={item} />
-                ))}
-              </div>
-            )}
-
-            {lastFetchedListing && (
-              <div className="mt-8 flex justify-center items-center">
-                <LoadMoreBtn handleClick={onLoadMore} />
-              </div>
+              <>
+                <div className="grid gap-6 min-[920px]:grid-cols-2">
+                  {listings.map((item) => (
+                    <ListingItem key={item.id} item={item} />
+                  ))}
+                </div>
+                {lastFetchedListing && (
+                  <div className="mt-8 flex justify-center items-center">
+                    {loadMoreLoading ? (
+                      <Spinner height="36px" width="36px" loadingText={false} />
+                    ) : (
+                      <LoadMoreBtn handleClick={onLoadMore} />
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </section>
         )}

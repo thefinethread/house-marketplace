@@ -17,6 +17,7 @@ import LoadMoreBtn from '../components/common/LoadMoreBtn';
 const Offers = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadMoreLoading, setLoadMoreLoading] = useState(false);
   const [tab, setTab] = useState('All');
   const [lastFetchedListing, setLastFetchedListing] = useState(null);
 
@@ -70,6 +71,8 @@ const Offers = () => {
   }, [tab]);
 
   const onLoadMore = async () => {
+    setLoadMoreLoading(true);
+
     let q;
     if (tab === 'All') {
       q = query(
@@ -109,12 +112,14 @@ const Offers = () => {
       }
     } catch (error) {
       toast.error(`Couldn't load more listings`);
+    } finally {
+      setLoadMoreLoading(false);
     }
   };
 
   return (
-    <div className="py-8 px-4 max-w-7xl mx-auto">
-      <header className="mb-8 font-bold">
+    <div className="py-8 px-4 max-w-7xl h-full mx-auto flex flex-col">
+      <header className="font-bold">
         <h1 className="text-4xl mb-8">Offers</h1>
       </header>
 
@@ -133,21 +138,28 @@ const Offers = () => {
       </div>
 
       {loading ? (
-        <Spinner />
-      ) : listings.length > 0 ? (
-        <div className="grid gap-6 min-[920px]:grid-cols-2">
-          {listings.map((item) => (
-            <ListingItem key={item.id} item={item} />
-          ))}
+        <div className="w-full h-full flex-1">
+          <Spinner />
         </div>
+      ) : listings.length > 0 ? (
+        <>
+          <div className="grid gap-6 min-[920px]:grid-cols-2">
+            {listings.map((item) => (
+              <ListingItem key={item.id} item={item} />
+            ))}
+          </div>
+          {lastFetchedListing && (
+            <div className="mt-8 flex justify-center items-center">
+              {loadMoreLoading ? (
+                <Spinner height="36px" width="36px" loadingText={false} />
+              ) : (
+                <LoadMoreBtn handleClick={onLoadMore} />
+              )}
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-center mt-20">There are no current offers.</div>
-      )}
-
-      {lastFetchedListing && (
-        <div className="mt-8 flex justify-center items-center">
-          <LoadMoreBtn handleClick={onLoadMore} />
-        </div>
       )}
     </div>
   );
