@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# House Marketplace App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- Dynamic House Marketplace React.js project
+- User functionalities:
+  - Registration and login
+  - Posting property listings for rent or sale
+  - Browsing available listings with pagination
+  - Seamless interaction with property owners
+    - Using `mailto` function for communication via email
+  - Logged-in users can manage listings:
+    - Edit or remove listed properties
+- Responsive design implemented:
+  - Includes a bottom navigation bar for enhanced mobile user experience
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **User Authentication**: Utilizes Firebase for authentication methods including email-password login and Google authentication.
+- **Database Management**: Firestore serves as the database to store user details and property listings data.
+- **Image Uploads**: Firebase Storage enables users to upload images associated with their property listings.
+- **Interactive Image Slider**: Implements the React Swiper library for a user-friendly image slider feature within property listings.
+- **Map Embedding**: Utilizes React Leaflet library to display property addresses via an embedded map view.
+- **Profile Editing**: Users have the ability to edit their profiles, including their name.
+- **Toast Notifications**: Utilizes React-Toastify for displaying stylish success or error messages.
+- **Responsive Design**: Tailwind CSS framework used for a responsive UI design.
 
-### `npm start`
+## Future Implementations
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Dark Mode**: Implement a dark mode feature to enhance user experience and reduce eye strain.
+- **Image Handling**: Allow users to view and delete previously uploaded listing images while updating their listings.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installation
 
-### `npm test`
+To run this project locally:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone this repository.
+2. Install dependencies using `npm install`.
+3. Set up Firebase configuration for authentication, Firestore, and Firebase Storage.
+4. Run the application using `npm start`.
 
-### `npm run build`
+## Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- React.js
+- React Router
+- Firebase (Authentication, Firestore, Storage)
+- React Swiper
+- React Leaflet
+- React-Toastify
+- Tailwind CSS
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
