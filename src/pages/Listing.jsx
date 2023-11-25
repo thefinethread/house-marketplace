@@ -116,7 +116,7 @@ const Listing = () => {
       <div className="relative mt-10 px-4 max-w-6xl m-auto">
         <div className="flex justify-between items-center">
           <h2 className="font-bold text-2xl">{listing.name}</h2>
-          {auth.currentUser && (
+          {auth.currentUser?.uid === listing.userRef && (
             <div className="relative">
               <RiMore2Fill
                 onClick={() => setShowModal((prev) => !prev)}
